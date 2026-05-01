@@ -1,0 +1,32 @@
+name: Hotel Booking DevOps CI
+
+on:
+  push:
+    branches: [ main, full-100-fixes ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check Docker Compose config
+        run: docker compose config
+
+      - name: Build containers
+        run: docker compose build
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform validate
+        working-directory: terraform
+        run: terraform validate

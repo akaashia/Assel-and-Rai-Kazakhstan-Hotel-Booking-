@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checkout from Git repository'
+            }
+        }
+        stage('Build and Deploy') {
+            steps {
+                sh 'cd /workspace && docker compose up -d --build'
+            }
+        }
+        stage('Health Check') {
+            steps {
+                sh 'curl -f http://localhost/api/health || curl -f http://backend:4000/health'
+            }
+        }
+    }
+}

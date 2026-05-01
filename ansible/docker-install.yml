@@ -1,0 +1,16 @@
+---
+- name: Install Docker only
+  hosts: localhost
+  become: yes
+  tasks:
+    - apt:
+        update_cache: yes
+    - apt:
+        name:
+          - docker.io
+          - docker-compose-plugin
+        state: present
+    - service:
+        name: docker
+        state: started
+        enabled: yes

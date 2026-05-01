@@ -1,0 +1,85 @@
+---
+- name: Configure hotel booking Ubuntu server
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - git
+          - docker.io
+          - docker-compose-plugin
+          - ufw
+          - fail2ban
+          - postgresql-client
+          - openssl
+          - unzip
+          - cron
+        state: present
+
+    - name: Enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Enable Fail2Ban service
+      service:
+        name: fail2ban
+        state: started
+        enabled: yes
+
+    - name: Allow required firewall ports
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+      loop:
+        - "22"
+        - "80"
+        - "443"
+        - "4000"
+        - "5678"
+        - "8080"
+        - "9090"
+        - "9093"
+        - "9100"
+        - "3007"
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        policy: deny
+
+    - name: Create backups directory
+      file:
+        path: "{{ playbook_dir }}/../backups"
+        state: directory
+        mode: "0755"
+
+    - name: Add daily database backup cron
+      cron:
+        name: "hotel postgres daily backup"
+        minute: "0"
+        hour: "3"
+        job: "cd {{ playbook_dir }}/.. && bash scripts/backup.sh >> backups/backup.log 2>&1"
+
+    - name: Check Docker version
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Show Docker version
+      debug:
+        var: docker_version.stdout
+
+    - name: Deploy project with Docker Compose
+      command: docker compose up -d --build
+      args:
+        chdir: "{{ playbook_dir }}/.."
+      when: not ansible_check_mode

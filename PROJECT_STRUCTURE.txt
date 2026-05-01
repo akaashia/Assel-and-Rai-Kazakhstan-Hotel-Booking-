@@ -1,0 +1,15 @@
+hotel-booking-project-ready/
+├── backend/
+├── frontend/
+├── docker-compose.yml
+├── .env
+├── .env.example
+├── terraform/
+├── ansible/
+├── scripts/
+├── monitoring/
+├── n8n/
+├── nginx/
+├── telegram-alert-bot/
+├── jenkins/
+└── README.md
