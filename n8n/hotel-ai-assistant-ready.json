@@ -1,6 +1,3 @@
-cd ~/hotel-booking-project-ready
-
-cat > n8n/hotel-ai-assistant-ready.json <<'JSON'
 {
   "name": "Hotel AI Assistant Gemini Ready",
   "nodes": [
@@ -36,7 +33,7 @@ cat > n8n/hotel-ai-assistant-ready.json <<'JSON'
         },
         "sendBody": true,
         "contentType": "json",
-        "jsonBody": "={{ JSON.stringify({ contents: [ { parts: [ { text: 'Сен Kazakhstan Hotel Booking жобасының AI ассистентісің. Қазақ тілінде қысқа әрі нақты жауап бер. Жоба туралы мәлімет: бұл жүйеде React frontend, FastAPI backend, PostgreSQL database, Nginx reverse proxy, Docker Compose, Prometheus, Grafana, Jenkins, n8n, Telegram Alert Bot, Terraform және Ansible бар. Пайдаланушы сұрағы: ' + ($json.body?.question || $json.question || 'Қонақүй брондау жүйесі не істейді?') } ] } ] }) }}",
+        "jsonBody": "={{ JSON.stringify({ contents: [{ parts: [{ text: 'Сен Kazakhstan Hotel Booking жобасының AI ассистентісің. Қазақ тілінде қысқа әрі нақты жауап бер. Жоба туралы мәлімет: React frontend, FastAPI backend, PostgreSQL database, Nginx reverse proxy, Docker Compose, Prometheus, Grafana, Jenkins, n8n, Telegram Alert Bot, Terraform және Ansible бар. Пайдаланушы сұрағы: ' + ($json.body?.question || $json.question || 'Қонақүй брондау жүйесі не істейді?') }] }] }) }}",
         "options": {}
       },
       "id": "gemini-http-request",
@@ -51,7 +48,7 @@ cat > n8n/hotel-ai-assistant-ready.json <<'JSON'
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { success: true, project: 'Kazakhstan Hotel Booking', source: 'Google Gemini', question: $('Webhook Hotel AI Assistant').item.json.body?.question || $('Webhook Hotel AI Assistant').item.json.question || '', answer: $json.candidates?.[0]?.content?.parts?.[0]?.text || 'Gemini жауап бермеді. API key немесе модельді тексеріңіз.' } }}",
+        "responseBody": "={{ { success: true, project: 'Kazakhstan Hotel Booking', source: 'Google Gemini', answer: $json.candidates?.[0]?.content?.parts?.[0]?.text || 'Gemini жауап бермеді' } }}",
         "options": {}
       },
       "id": "respond-to-webhook",
@@ -88,13 +85,7 @@ cat > n8n/hotel-ai-assistant-ready.json <<'JSON'
       ]
     }
   },
-  "pinData": {},
   "settings": {
     "executionOrder": "v1"
-  },
-  "staticData": null,
-  "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2026-05-01T00:00:00.000Z",
-  "versionId": "1"
+  }
 }

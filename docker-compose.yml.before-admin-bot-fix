@@ -179,6 +179,14 @@ services:
       - ./:/workspace
     networks:
       - hotel_net
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data:
+  n8n_data:
+  jenkins_data:
+
   telegram-admin-bot:
     build: ./telegram-admin-bot
     container_name: hotel_telegram_admin_bot
@@ -207,13 +215,6 @@ services:
       - alertmanager
     networks:
       - hotel_net
-
-volumes:
-  postgres_data:
-  prometheus_data:
-  grafana_data:
-  n8n_data:
-  jenkins_data:
 
 networks:
   hotel_net:
