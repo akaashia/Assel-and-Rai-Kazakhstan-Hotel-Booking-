@@ -15,13 +15,43 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create CI env file
-        run: cp .env.example .env
+        run: |
+          cat > .env <<'EOF'
+          DB_HOST=postgres
+          DB_PORT=5432
+          DB_NAME=hotel_db
+          DB_USER=hotel_user
+          DB_PASSWORD=hotel_password
+          POSTGRES_DB=hotel_db
+          POSTGRES_USER=hotel_user
+          POSTGRES_PASSWORD=hotel_password
+          GEMINI_API_KEY=dummy_gemini_key_for_ci
+          JWT_SECRET=dummy_jwt_secret_for_ci
+          JWT_REFRESH_SECRET=dummy_jwt_refresh_secret_for_ci
+          PORT=4000
+          FRONTEND_URL=http://localhost
+          NODE_ENV=production
+          VITE_API_URL=/api
+          VITE_N8N_WEBHOOK_URL=http://localhost:5678/webhook/hotel-ai-assistant
+          N8N_BASIC_AUTH_ACTIVE=true
+          N8N_BASIC_AUTH_USER=admin
+          N8N_BASIC_AUTH_PASSWORD=admin
+          N8N_HOST=localhost
+          N8N_PORT=5678
+          N8N_PROTOCOL=http
+          WEBHOOK_URL=http://localhost:5678
+          N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+          GF_SECURITY_ADMIN_USER=admin
+          GF_SECURITY_ADMIN_PASSWORD=admin
+          TELEGRAM_BOT_TOKEN=dummy_telegram_token_for_ci
+          TELEGRAM_CHAT_ID=123456789
+          EOF
 
       - name: Check Docker Compose config
         run: docker compose config
 
-      - name: Build containers
-        run: docker compose build
+      - name: Build core application images
+        run: docker compose build backend frontend telegram-alert-bot
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
